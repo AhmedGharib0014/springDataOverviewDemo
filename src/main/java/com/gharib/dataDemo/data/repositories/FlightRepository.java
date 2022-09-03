@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface FlightRepository extends PagingAndSortingRepository<FLight,Long> {
+public interface FlightRepository extends PagingAndSortingRepository<FLight,Long>,CustomDeletingRepository {
     List<FLight> findByOrigin(String origin);
 
     List<FLight> findByOriginAndDestination(String origin,String destination);

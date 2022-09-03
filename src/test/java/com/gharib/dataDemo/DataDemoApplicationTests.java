@@ -4,7 +4,6 @@ import com.gharib.dataDemo.data.models.FLight;
 import com.gharib.dataDemo.data.repositories.FlightRepository;
 import java.util.Iterator;
 import java.util.List;
-import net.bytebuddy.TypeCache;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -51,6 +50,28 @@ class DataDemoApplicationTests {
 
 
 	}
+
+	@Test
+	void testDeletingByCustomRepo() {
+
+		//save data
+		FLight fLight = new FLight();
+		fLight.setOrigin("test");
+		fLight.setDestination("test2");
+
+		flightRepository.save(fLight);
+
+
+		flightRepository.deleteByOrigin("test");
+
+
+		Iterable<FLight> fLights = flightRepository.findAll();
+		Assertions.assertThat(fLights).hasSize(0);
+
+
+	}
+
+
 
 
 
@@ -199,7 +220,7 @@ class DataDemoApplicationTests {
 
 
 
-		Page<FLight> flightPage = flightRepository.findAll(PageRequest.of(10,5,Sort.by(Sort.Direction.DESC,"origin")));
+		Page<FLight> flightPage = flightRepository.findAll(PageRequest.of(0,5,Sort.by(Sort.Direction.ASC,"origin")));
 
 
 		Assertions.assertThat(flightPage.getTotalPages()).isEqualTo(10);
@@ -207,7 +228,7 @@ class DataDemoApplicationTests {
 		Assertions.assertThat(flightPage.getNumberOfElements()).isEqualTo(5);
 		Assertions.assertThat(flightPage.getContent())
 			.extracting(FLight::getOrigin)
-			.containsExactly("49","48","47","46","45");
+			.containsExactly("0","1","10","11","12");
 
 	}
 
