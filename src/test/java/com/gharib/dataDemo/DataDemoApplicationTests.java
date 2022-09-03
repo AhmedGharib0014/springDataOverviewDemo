@@ -143,6 +143,27 @@ class DataDemoApplicationTests {
 
 	}
 
+	@Test
+	public  void shouldSortResultByOriginAndDesination(){
+		FLight fLight1 = createFlightByOriginAndDestination("b","des2");
+		FLight fLight2 = createFlightByOriginAndDestination("a","des2");
+		FLight fLight3 = createFlightByOriginAndDestination("a","des1");
+
+		flightRepository.save(fLight1);
+		flightRepository.save(fLight2);
+		flightRepository.save(fLight3);
+
+		Iterable<FLight> flights = flightRepository.findAll(Sort.by("origin","destination"));
+		Iterator<FLight> it = flights.iterator();
+
+
+		Assertions.assertThat(flights).hasSize(3);
+		Assertions.assertThat(it.next().getDestination()).isEqualTo("des1");
+		Assertions.assertThat(it.next().getDestination()).isEqualTo("des2");
+		Assertions.assertThat(it.next().getOrigin()).isEqualTo("b");
+
+	}
+
 
 
 	@Test
