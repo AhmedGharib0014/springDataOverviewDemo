@@ -2,7 +2,9 @@ package com.gharib.dataDemo;
 
 import com.gharib.dataDemo.data.models.FLight;
 import com.gharib.dataDemo.data.repositories.FlightRepository;
+import java.util.Iterator;
 import java.util.List;
+import net.bytebuddy.TypeCache;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Sort;
 
 @DataJpaTest
 class DataDemoApplicationTests {
@@ -118,6 +121,28 @@ class DataDemoApplicationTests {
 		Assertions.assertThat(flights).hasSize(3);
 
 	}
+
+	@Test
+	public  void shouldSortResultByOrigin(){
+		FLight fLight1 = createFlightByOriginAndDestination("c","des");
+		FLight fLight2 = createFlightByOriginAndDestination("b","de2");
+		FLight fLight3 = createFlightByOriginAndDestination("a","de2");
+
+		flightRepository.save(fLight1);
+		flightRepository.save(fLight2);
+		flightRepository.save(fLight3);
+
+		Iterable<FLight> flights = flightRepository.findAll(Sort.by("origin"));
+		Iterator<FLight> it = flights.iterator();
+
+
+		Assertions.assertThat(flights).hasSize(3);
+		Assertions.assertThat(it.next().getOrigin()).isEqualTo("a");
+		Assertions.assertThat(it.next().getOrigin()).isEqualTo("b");
+		Assertions.assertThat(it.next().getOrigin()).isEqualTo("c");
+
+	}
+
 
 
 	@Test
