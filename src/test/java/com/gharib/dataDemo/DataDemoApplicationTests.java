@@ -211,6 +211,27 @@ class DataDemoApplicationTests {
 
 	}
 
+	@Test
+	public  void testPagingAndSortingByDerivedQuery(){
+		for (int i = 0; i < 50; i++) {
+			FLight fLight = createFlightByOrigin(String.valueOf(i));
+			flightRepository.save(fLight);
+		}
+
+
+
+		Page<FLight> flightPage = flightRepository.findByDestination("any thing",PageRequest.of(0,5,Sort.by(Sort.Direction.ASC,"origin")));
+
+
+		Assertions.assertThat(flightPage.getTotalPages()).isEqualTo(10);
+		Assertions.assertThat(flightPage.getTotalElements()).isEqualTo(50);
+		Assertions.assertThat(flightPage.getNumberOfElements()).isEqualTo(5);
+		Assertions.assertThat(flightPage.getContent())
+			.extracting(FLight::getOrigin)
+			.containsExactly("0","1","10","11","12");
+
+	}
+
 
 	@Test
 	public  void testDerivedLogicIgnoreCase(){
