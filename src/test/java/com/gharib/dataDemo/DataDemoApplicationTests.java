@@ -14,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 @DataJpaTest
@@ -164,6 +166,50 @@ class DataDemoApplicationTests {
 
 	}
 
+
+	@Test
+	public  void testPaging(){
+
+		for (int i = 0; i < 50; i++) {
+			FLight fLight = createFlightByOrigin(String.valueOf(i));
+			flightRepository.save(fLight);
+		}
+
+
+
+
+		Page<FLight> flightPage = flightRepository.findAll(PageRequest.of(0,5));
+
+
+		Assertions.assertThat(flightPage.getTotalPages()).isEqualTo(10);
+		Assertions.assertThat(flightPage.getTotalElements()).isEqualTo(50);
+		Assertions.assertThat(flightPage.getNumberOfElements()).isEqualTo(5);
+		Assertions.assertThat(flightPage.getContent())
+			.extracting(FLight::getOrigin)
+			.containsExactly("0","1","2","3","4");
+
+	}
+
+	@Test
+	public  void testPagingAndSorting(){
+		for (int i = 0; i < 50; i++) {
+			FLight fLight = createFlightByOrigin(String.valueOf(i));
+			flightRepository.save(fLight);
+		}
+
+
+
+		Page<FLight> flightPage = flightRepository.findAll(PageRequest.of(10,5,Sort.by(Sort.Direction.DESC,"origin")));
+
+
+		Assertions.assertThat(flightPage.getTotalPages()).isEqualTo(10);
+		Assertions.assertThat(flightPage.getTotalElements()).isEqualTo(50);
+		Assertions.assertThat(flightPage.getNumberOfElements()).isEqualTo(5);
+		Assertions.assertThat(flightPage.getContent())
+			.extracting(FLight::getOrigin)
+			.containsExactly("49","48","47","46","45");
+
+	}
 
 
 	@Test
