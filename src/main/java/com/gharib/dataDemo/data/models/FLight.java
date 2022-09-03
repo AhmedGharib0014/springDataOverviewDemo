@@ -1,4 +1,4 @@
-package com.gharib.dataDemo.models;
+package com.gharib.dataDemo.data.models;
 
 
 import java.time.LocalDateTime;

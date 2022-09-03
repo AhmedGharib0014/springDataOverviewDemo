@@ -1,6 +1,7 @@
 package com.gharib.dataDemo;
 
-import com.gharib.dataDemo.models.FLight;
+import com.gharib.dataDemo.data.models.FLight;
+import com.gharib.dataDemo.data.repositories.FlightRepository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -16,6 +17,9 @@ class DataDemoApplicationTests {
 
 	@Autowired
 	private EntityManager entityManager;
+
+	@Autowired
+	private FlightRepository flightRepository;
 
 	@Test
 	void testSavingData() {
@@ -33,6 +37,29 @@ class DataDemoApplicationTests {
 
 		Assertions.assertThat(flights).hasSize(1).first().isEqualTo(fLight);
 
+
+	}
+
+
+
+	@Test
+	public void testCrudOperation(){
+
+		FLight fLight = new FLight();
+		fLight.setOrigin("test");
+		fLight.setDestination("test2");
+
+		flightRepository.save(fLight);
+
+		Assertions.assertThat(flightRepository.findAll())
+			.hasSize(1)
+			.first()
+			.isEqualTo(fLight);
+
+
+		flightRepository.deleteById(fLight.getId());
+
+		Assertions.assertThat(flightRepository.count()).isZero();
 
 	}
 
